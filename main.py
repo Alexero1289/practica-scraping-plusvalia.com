@@ -4,11 +4,11 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 
 from telegram_bot import TelegramBot
-
+from mongodb import MongoDB
 chrome_driver = webdriver.Chrome()
 
 bot = TelegramBot()
-# db = Mongo()
+db = MongoDB()
 
 
 chrome_driver.get("https://www.wikipedia.org/")
@@ -28,15 +28,10 @@ for t in topics:
 
     content = chrome_driver.find_element(By.ID, "mw-content-text")
     print(content.text)
-
-    # enviar por telegram
     text = content.text
     text = text[:4000]
     bot.send_tg_message(text)
-    # db.insert_wikipedia_text({
-    #   "topic": content.text
-    # }
-
+    db.insert_wikipedia_text(title=t,text=text)
     time.sleep(2)
     chrome_driver.get("https://www.wikipedia.org/")
 
